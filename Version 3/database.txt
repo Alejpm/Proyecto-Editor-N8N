@@ -1,0 +1,56 @@
+CREATE DATABASE erp_visual;
+USE erp_visual;
+
+CREATE TABLE clientes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100),
+  activo BOOLEAN DEFAULT TRUE,
+  deuda DECIMAL(10,2) DEFAULT 0
+);
+
+CREATE TABLE productos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100),
+  precio DECIMAL(10,2),
+  stock INT
+);
+
+CREATE TABLE pedidos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT,
+  total DECIMAL(10,2),
+  fecha DATETIME,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+CREATE TABLE facturas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pedido_id INT,
+  fecha DATETIME,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+);
+
+CREATE TABLE workflows (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(150),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE workflow_nodes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  workflow_id INT,
+  node_id VARCHAR(50),
+  type VARCHAR(50),
+  pos_x FLOAT,
+  pos_y FLOAT,
+  config JSON,
+  FOREIGN KEY (workflow_id) REFERENCES workflows(id)
+);
+
+CREATE TABLE workflow_edges (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  workflow_id INT,
+  from_node VARCHAR(50),
+  to_node VARCHAR(50),
+  FOREIGN KEY (workflow_id) REFERENCES workflows(id)
+);
